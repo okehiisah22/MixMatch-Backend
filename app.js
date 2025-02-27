@@ -5,7 +5,7 @@ const cors = require('cors');
 const logger = require('morgan');
 
 require('./config/passport');
-const { userRoutes } = require('./routes');
+const { userRoutes, authRoutes, bookingRoutes } = require('./routes');
 const connectDB = require('./db');
 
 const app = express();
@@ -26,6 +26,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/user', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/booking', bookingRoutes);
 
 server.listen(PORT, () => {
   connectDB();
