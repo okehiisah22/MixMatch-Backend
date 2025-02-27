@@ -6,6 +6,7 @@ const invoicesRoutes = require('./invoicesRoutes');
 const automatedInvoiceRoutes = require('./automatedInvoiceRoutes');
 const automatedContractsRoutes = require('./automatedContractsRoutes');
 const blogRoutes = require('./blogRoutes');
+const subscriberRoutes = require('./subscriberRoute');
 
 module.exports = {
   userRoutes,
@@ -16,4 +17,5 @@ module.exports = {
   automatedInvoiceRoutes,
   automatedContractsRoutes,
   blogRoutes,
+  subscriberRoutes,
 };
