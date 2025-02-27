@@ -9,6 +9,15 @@ const {
   userRoutes,
   authRoutes,
   bookingRoutes,
+  automatedContractsRoutes,
+  automatedInvoiceRoutes,
+  contractsRoutes,
+  invoicesRoutes,
+} = require('./routes');
+const {
+  userRoutes,
+  authRoutes,
+  bookingRoutes,
   blogRoutes,
 } = require('./routes');
 const connectDB = require('./db');
@@ -33,6 +42,10 @@ app.get('/', (req, res) => {
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/booking', bookingRoutes);
+app.use('/api/automatedContracts', automatedContractsRoutes);
+app.use('/api/automatedInvoices', automatedInvoiceRoutes);
+app.use('/api/contracts', invoicesRoutes);
+app.use('/api/invoice', contractsRoutes);
 app.use('/api/blog', blogRoutes);
 
 server.listen(PORT, () => {
