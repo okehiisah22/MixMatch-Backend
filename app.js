@@ -5,7 +5,12 @@ const cors = require('cors');
 const logger = require('morgan');
 
 require('./config/passport');
-const { userRoutes, authRoutes, bookingRoutes } = require('./routes');
+const {
+  userRoutes,
+  authRoutes,
+  bookingRoutes,
+  blogRoutes,
+} = require('./routes');
 const connectDB = require('./db');
 
 const app = express();
@@ -28,6 +33,7 @@ app.get('/', (req, res) => {
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/booking', bookingRoutes);
+app.use('/api/blog', blogRoutes);
 
 server.listen(PORT, () => {
   connectDB();
