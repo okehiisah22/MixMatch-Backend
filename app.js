@@ -14,6 +14,12 @@ const {
   contractsRoutes,
   invoicesRoutes,
 } = require('./routes');
+const {
+  userRoutes,
+  authRoutes,
+  bookingRoutes,
+  blogRoutes,
+} = require('./routes');
 const connectDB = require('./db');
 
 const app = express();
@@ -40,6 +46,7 @@ app.use('/api/automatedContracts', automatedContractsRoutes);
 app.use('/api/automatedInvoices', automatedInvoiceRoutes);
 app.use('/api/contracts', invoicesRoutes);
 app.use('/api/invoice', contractsRoutes);
+app.use('/api/blog', blogRoutes);
 
 server.listen(PORT, () => {
   connectDB();
