@@ -8,6 +8,7 @@ import passport from "passport";
 import logger from './config/logger';
 import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
+import authRoutes from './routes/auth.route';
 
 dotenv.config();
 const app = express();
@@ -39,7 +40,7 @@ app.use('/health', (req, res) => {
   res.status(200).json({ greeting: 'Hello World! Mixmatch' });
 });
 
-// app.use("/api/auth", )
+app.use("/api/auth", authRoutes);
 
 app.use(routeError);
 
