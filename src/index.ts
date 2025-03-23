@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import logger from './config/logger';
+import { connectDB } from './config/db';
 import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
 import authRoutes from './routes/authRoutes';
@@ -25,6 +26,7 @@ mongoose.connect(MONGODB_URI)
     logger.error('Error connecting to MongoDB:', err);
     process.exit(1);
   });
+connectDB();
 
 app.use(
   cors({
