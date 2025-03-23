@@ -6,6 +6,7 @@ import logger from './config/logger';
 import { connectDB } from './config/db';
 import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
+import authRoutes from './routes/auth.routes';
 import authRoutes from './routes/authRoutes';
 
 // Load environment variables before using them
