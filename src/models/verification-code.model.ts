@@ -12,31 +12,33 @@ const verificationCodeSchema = new Schema<IVerificationCode>(
     email: {
       type: String,
       required: true,
-      index: true
+      index: true,
     },
     code: {
       type: String,
-      required: true
+      required: true,
     },
     expiresAt: {
       type: Date,
-      required: true
+      required: true,
     },
     createdAt: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
+// Create a compound index for faster lookups by email and code
 verificationCodeSchema.index({ email: 1, code: 1 });
 
+// Add TTL index to automatically remove expired codes
 verificationCodeSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export const VerificationCode = mongoose.model<IVerificationCode>(
   'VerificationCode',
   verificationCodeSchema
-); 
+);
