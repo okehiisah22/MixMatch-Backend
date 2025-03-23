@@ -5,6 +5,7 @@ import logger from './config/logger';
 import { connectDB } from './config/db';
 import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
+import authRoutes from './routes/auth.routes';
 
 dotenv.config();
 const app = express();
@@ -21,6 +22,8 @@ app.use(
 app.use(loggingHandler);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false }));
+
+app.use('/api/auth', authRoutes);
 
 app.use('/health', (req, res) => {
   res.status(200).json({ greeting: 'Hello World! Mixmatch' });
