@@ -6,12 +6,14 @@ import session from "cookie-session"
 import './config/passport.config';
 import passport from "passport";
 import logger from './config/logger';
+import { connectDB } from './config/db';
 import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
 import authRoutes from './routes/auth.route';
 
 dotenv.config();
 const app = express();
+connectDB();
 
 app.use(
   cors({
@@ -44,11 +46,12 @@ app.use("/api/auth", authRoutes);
 
 app.use(routeError);
 
-app.listen(process.env.PORT, () => {
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
   logger.info(
     `<---------------------------------------------------------------->`
   );
-  logger.info(`Server is running on port ${process.env.PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
   logger.info(
     `<---------------------------------------------------------------->`
   );
