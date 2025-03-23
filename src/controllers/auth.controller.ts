@@ -110,3 +110,58 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     });
   }
 };
+
+export const forgotPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email } = req.body;
+
+    // Validate email input
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required',
+      });
+    }
+
+    // Regular expression for basic email validation
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email',
+      });
+    }
+
+    // Initiate password reset
+    const result = await VerificationService.initiatePasswordReset(email);
+
+    // Always return a 200 status for security reasons, even if user not found
+    // This prevents user enumeration attacks
+    return res.status(200).json({
+      success: true,
+      message: 
+        result.success 
+          ? 'Password reset instructions sent to your email' 
+          : 'If an account exists with this email, password reset instructions will be sent',
+    });
+  }
+);
+
+export const resetPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email, code, newPassword } = req.body;
+
+    // Validate required fields
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email, verification code, and new password are required',
+      });
+    }
+
+    // Reset password
+    const result = await VerificationService.resetPassword(email, code, newPassword);
+
+    return res.status(result.success ? 200 : 400).json(result);
+  }
+);

@@ -46,3 +46,30 @@ export const sendVerificationEmail = async (email: string, code: string) => {
     };
   }
 };
+
+export const sendPasswordResetEmail = async (email: string, code: string) => {
+  try {
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: email,
+      subject: 'Reset Your Password',
+      html: `
+        <h1>Password Reset</h1>
+        <p>Your password reset code is: <strong>${code}</strong></p>
+        <p>This code will expire in 15 minutes.</p>
+        <p>If you didn't request this code, please ignore this email.</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    return {
+      success: true,
+      message: 'Password reset email sent successfully',
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: 'Failed to send password reset email',
+    };
+  }
+};
