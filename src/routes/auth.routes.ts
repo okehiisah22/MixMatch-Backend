@@ -3,6 +3,7 @@ import {
   verifyAccount,
   resendVerificationCode,
   signup,
+  signin
 } from '../controllers/auth.controller';
 
 import { rateLimiter } from '../middleware/rateLimiter';
@@ -18,6 +19,7 @@ const authRouter = (router: express.Router) => {
   router.post('/auth/verify-account', verificationRateLimiter, verifyAccount);
   router.post('/auth/resend-verification', resendVerificationCode);
   router.post('/auth/signup', signup);
+  router.post('/auth/signin', signin);
 };
 
 export default authRouter;
