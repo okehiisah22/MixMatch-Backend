@@ -8,26 +8,13 @@ import logger from './config/logger';
 import { connectDB } from './config/db';
 import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
+import authRoutes from './routes/auth.routes';
 
 // Load environment variables before using them
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3100;
-
-// Connect to MongoDB
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mixmatch';
-
-// Connect to MongoDB
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    logger.info('Connected to MongoDB Atlas successfully');
-  })
-  .catch((err) => {
-    logger.error('Error connecting to MongoDB:', err);
-    process.exit(1);
-  });
-connectDB();
 
 app.use(
   cors({
@@ -52,10 +39,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Routes
 app.use('/health', (req, res) => {
   res.status(200).json({ greeting: 'Hello World! Mixmatch' });
 });
+
+// Auth routes
+app.use('/api/auth', authRoutes);
 
 app.use(routeError);
 
@@ -64,6 +53,8 @@ app.listen(PORT, () => {
     `<---------------------------------------------------------------->`
   );
   logger.info(`Server is running on port ${PORT}`);
+  connectDB();
+
   logger.info(
     `<---------------------------------------------------------------->`
   );
