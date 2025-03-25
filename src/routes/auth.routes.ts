@@ -7,6 +7,7 @@ import {
 } from '../controllers/auth.controller';
 
 import { rateLimiter } from '../middleware/rateLimiter';
+import { rbac } from '../middleware/rbac';
 
 const router = Router();
 
@@ -20,6 +21,17 @@ const authRouter = (router: express.Router) => {
   router.post('/auth/resend-verification', resendVerificationCode);
   router.post('/auth/signup', signup);
   router.post('/auth/signin', signin);
+  
+  // Example of an authenticated route with role restriction (if needed in future)
+  // router.get('/auth/profile', 
+  //   authenticateToken, 
+  //   createRoleMiddleware.forRoles([
+  //     UserRole.CLIENT, 
+  //     UserRole.DJ, 
+  //     UserRole.EVENT_PLANNER
+  //   ]), 
+  //   getUserProfile
+  // );
 };
 
 export default authRouter;
