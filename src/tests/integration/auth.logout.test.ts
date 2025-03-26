@@ -28,41 +28,53 @@ const app = express();
 app.use(express.json());
 
 // Create the logout route for testing
-app.post('/auth/logout', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-    
-    if (!token) {
-      res.status(400).json({ message: 'No token provided' });
-      return;
-    }
+app.post('/auth/logout', authenticateToken, (req: Request, res: Response): Promise<void> => {
+  // Cast req to AuthRequest to access the user property
+  const authReq = req as AuthRequest;
+  
+  return (async () => {
+    try {
+      const token = req.headers.authorization?.split(' ')[1];
+      
+      if (!token) {
+        res.status(400).json({ message: 'No token provided' });
+        return;
+      }
 
-    const decoded = req.user as JwtPayload;
-    const expirationTime = decoded?.exp ? new Date(decoded.exp * 1000) : new Date(Date.now() + 24 * 60 * 60 * 1000);
-    
-    // Check if token is already blacklisted
-    const existingBlacklist = await TokenBlacklist.findOne({ token });
-    if (existingBlacklist) {
-      res.status(200).json({ message: 'Already logged out' });
-      return;
-    }
-    
-    await TokenBlacklist.create({
-      token,
-      userId: decoded?.userId,
-      expiresAt: expirationTime
-    });
+      // Make sure user exists and has been set by authenticateToken middleware
+      if (!authReq.user) {
+        res.status(401).json({ message: 'Authentication failed' });
+        return;
+      }
 
-    res.status(200).json({ message: 'Successfully logged out' });
-  } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
+      const decoded = authReq.user;
+      const expirationTime = decoded?.exp ? new Date(decoded.exp * 1000) : new Date(Date.now() + 24 * 60 * 60 * 1000);
+      
+      // Check if token is already blacklisted
+      const existingBlacklist = await TokenBlacklist.findOne({ token });
+      if (existingBlacklist) {
+        res.status(200).json({ message: 'Already logged out' });
+        return;
+      }
+      
+      await TokenBlacklist.create({
+        token,
+        userId: decoded?.userId,
+        expiresAt: expirationTime
+      });
+
+      res.status(200).json({ message: 'Successfully logged out' });
+    } catch (error) {
+      console.error('Logout error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  })();
 });
 
 // Add token verification endpoint for testing
-app.get('/auth/verify-token', authenticateToken, (req: AuthRequest, res: Response): void => {
-  res.status(200).json({ valid: true, user: req.user });
+app.get('/auth/verify-token', authenticateToken, (req: Request, res: Response): void => {
+  const authReq = req as AuthRequest;
+  res.status(200).json({ valid: true, user: authReq.user });
 });
 
 describe('Authentication Logout API', () => {
