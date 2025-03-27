@@ -1,15 +1,14 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-// Step 1: Define the Article interface
 export interface IArticle extends Document {
   title: string;
   content: string;
   author: string;
+  tags: string[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Step 2: Define the Mongoose schema
 const ArticleSchema: Schema = new Schema(
   {
     title: {
@@ -25,13 +24,19 @@ const ArticleSchema: Schema = new Schema(
       type: String,
       required: [true, 'Author is required'],
     },
+    tags: {
+      type: [String],
+      default: [],
+    },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 
-// Step 3: Create the model from the schema
+// Create a full-text index on title, content, and tags
+ArticleSchema.index({ title: 'text', content: 'text', tags: 'text' });
+
 const Article = mongoose.model<IArticle>('Article', ArticleSchema);
 
 export default Article;
