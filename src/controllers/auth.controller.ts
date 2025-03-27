@@ -1,13 +1,7 @@
 
-import { Request, Response } from 'express';
-import { User, UserRole } from '../models/user.model';
+
 import { VerificationCode } from '../models/verification-code.model';
 import { sendVerificationEmail } from '../services/email.service';
-import { asyncHandler } from '../utils/asyncHandler';
-import { UserService } from '../services/user.service';
-import { VerificationService } from '../services/verification.service';
-import logger from '../config/logger';
-
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler";
 import { User, UserRole } from "../models/user.model";
@@ -215,7 +209,7 @@ export const resetPassword = asyncHandler(
     return res.status(result.success ? 200 : 400).json(result);
   }
 );
-=======
+
 export const signin = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -275,6 +269,5 @@ export const signin = asyncHandler(async (req: Request, res: Response) => {
 }
 });
 
-});
 
 

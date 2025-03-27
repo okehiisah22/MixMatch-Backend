@@ -1,4 +1,4 @@
-import { Booking, IBooking } from "../models/booking.model";
+import { Booking, IBooking } from "../models/book.model";
 import mongoose from "mongoose";
 
 export class BookingService {

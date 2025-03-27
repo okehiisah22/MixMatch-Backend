@@ -12,9 +12,7 @@ export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
 export interface INotification extends Document {
   title: string;
-  message: string;
   contentType: string;
-  isRead: boolean;
   userId: mongoose.Types.ObjectId; 
   message: string;
   type: NotificationType;

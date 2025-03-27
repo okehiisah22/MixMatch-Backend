@@ -1,21 +1,21 @@
-import ReviewModel from "../models/review.model";
+import { Review } from "../models/review.model";
 
 export const createReview = async (data: any) => {
-	return await ReviewModel.create(data);
+	return await Review.create(data);
 };
 
 export const getReviews = async () => {
-	return await ReviewModel.find().populate("user").populate("product");
+	return await Review.find().populate("user").populate("product");
 };
 
 export const getReviewById = async (id: string) => {
-	return await ReviewModel.findById(id);
+	return await Review.findById(id);
 };
 
 export const updateReview = async (id: string, data: any) => {
-	return await ReviewModel.findByIdAndUpdate(id, data, { new: true });
+	return await Review.findByIdAndUpdate(id, data, { new: true });
 };
 
 export const deleteReview = async (id: string) => {
-	return await ReviewModel.findByIdAndDelete(id);
+	return await Review.findByIdAndDelete(id);
 };

@@ -10,15 +10,6 @@ import { connectDB } from './config/db';
 import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
 import authRoutes from './routes/auth.routes';
-
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import logger from "./config/logger";
-import { connectDB } from "./config/db";
-import { loggingHandler } from "./middleware/pinoHttp";
-import { routeError } from "./middleware/routeError";
 import mixmatchRoutes from "./routes";
 import reviewRoutes from "./routes/review.routes"; // Add this import
 
@@ -60,7 +51,6 @@ app.use('/health', (req, res) => {
 
 // Auth routes
 app.use('/api/auth', authRoutes);
-=======
 app.use("/health", (req, res) => {
 	res.status(200).json({ greeting: "Hello World! Mixmatch" });
 });

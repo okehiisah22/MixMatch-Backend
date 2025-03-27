@@ -7,7 +7,9 @@
     "dev": "nodemon",
     "start": "npx tsc && node build/index.js",
     "build": "rm -rf build/ && tsc",
-    "seed": "ts-node src/scripts/seed.ts"
+    "seed": "ts-node src/scripts/seed.ts",
+    "payment-seed": "ts-node src/scripts/paymentTestSeed.ts",
+    "test:payment": "jest tests/payment/payment.test.ts"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,7 @@
   "homepage": "https://github.com/MixMatch-Inc/MixMatch-Backend#readme",
   "description": "",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -33,6 +36,7 @@
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.0",
     "nodemailer": "^6.10.0",
+    "passport": "^0.7.0",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
     "supertest": "^7.1.0"
@@ -44,9 +48,11 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/ioredis": "^4.28.10",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.13.11",
+    "@types/nodemailer": "^6.4.17",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/winston": "^2.4.4",

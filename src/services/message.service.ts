@@ -1,7 +1,7 @@
-import Message, { MessageInterface } from "../models/message.model";
+import Message, { IMessage } from "../models/message.model";
 import { User } from "../models/user.model";
 
-export const createMessage = async (dto: MessageInterface) => {
+export const createMessage = async (dto: IMessage) => {
   const user = await User.findById(dto.senderId);
   if (!user) {
     return {
