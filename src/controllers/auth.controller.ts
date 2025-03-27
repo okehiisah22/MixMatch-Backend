@@ -5,6 +5,43 @@ import { VerificationService } from "../services/verification.service";
 import logger from "../config/logger";
 import { UserService } from "../services/user.service";
 import Jwt from "../utils/security/jwt";
+import { addToBlacklist } from "../services/token.service";
+
+
+
+export const logout = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Get the token from the Authorization header
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+      res.status(401).json({
+        status: 'error',
+        message: 'No token provided'
+      });
+      return;
+    }
+    
+    // Add the token to a blacklist
+    // You'll need to implement the token blacklist functionality
+    // This could be stored in a database or Redis
+    await addToBlacklist(token);
+    
+    res.status(200).json({
+      status: 'success',
+      message: 'Successfully logged out'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to logout'
+    });
+  }
+};
+
+
 
 export const verifyAccount = asyncHandler(
   async (req: Request, res: Response) => {

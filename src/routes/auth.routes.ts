@@ -3,7 +3,8 @@ import {
   verifyAccount,
   resendVerificationCode,
   signup,
-  signin
+  signin,
+  logout
 } from '../controllers/auth.controller';
 
 import { rateLimiter } from '../middleware/rateLimiter';
@@ -21,6 +22,7 @@ const authRouter = (router: express.Router) => {
   router.post('/auth/resend-verification', resendVerificationCode);
   router.post('/auth/signup', signup);
   router.post('/auth/signin', signin);
+  router.post('/auth/logout', logout);
   
   // Example of an authenticated route with role restriction (if needed in future)
   // router.get('/auth/profile', 
