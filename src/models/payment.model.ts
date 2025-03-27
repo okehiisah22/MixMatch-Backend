@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import Booking from './Booking.model';
+import { User } from './user.model'; 
 import { Document, Schema, Model, Types } from 'mongoose';
 
 // Enum for Payment Status

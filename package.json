@@ -7,7 +7,8 @@
     "dev": "nodemon",
     "start": "npx tsc && node build/index.js",
     "build": "rm -rf build/ && tsc",
-    "seed": "ts-node src/scripts/seed.ts"
+    "seed": "ts-node src/scripts/seed.ts",
+    "payment-seed": "ts-node src/scripts/paymentTestSeed.ts" 
   },
   "repository": {
     "type": "git",
