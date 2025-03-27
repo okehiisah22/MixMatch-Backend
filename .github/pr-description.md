@@ -1,0 +1,1 @@
+This PR implements the forgot password functionality, allowing users to securely reset their passwords when needed.
