@@ -2,41 +2,65 @@
 import { Request, Response, NextFunction } from "express";
 import Jwt from "../utils/security/jwt";
 import { UserRole } from "../models/user.model";
+import { isTokenBlacklisted } from "../services/token.service";
 
-export const authenticateToken = (
-  req: Request,
-  res: Response,
+// Define the JWT payload type
+export interface JwtPayload {
+  id: string;  // Remove optional
+  userId?: string;
+  email: string;  // Remove optional
+  role: UserRole;  // Remove optional
+  exp?: number;
+}
+
+// Define the extended request type
+export interface AuthRequest extends Request {
+  user?: JwtPayload;  // Keep using 'user' to match existing code
+}
+
+// Type assertion function to safely convert Request to AuthRequest
+function asAuthRequest(req: Request): AuthRequest {
+  return req as AuthRequest;
+}
+
+export const authenticateToken = async (
+  req: Request, 
+  res: Response, 
   next: NextFunction
-) => {
+): Promise<void> => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       message: "No token provided",
     });
+    return;
   }
 
   try {
-    const decoded = Jwt.verify(token) as {
-      id: string;
-      email: string;
-      role: UserRole;
-    };
+    // Check if token is blacklisted
+    const isBlacklisted = await isTokenBlacklisted(token);
+    if (isBlacklisted) {
+      res.status(401).json({
+        success: false,
+        message: "Token has been invalidated",
+      });
+      return;
+    }
+    
+    const decoded = Jwt.verify(token) as JwtPayload;
 
     // Attach user information to the request
-    req.user = {
-      id: decoded.id,
-      email: decoded.email,
-      role: decoded.role,
-    };
+    asAuthRequest(req).user = decoded;
 
     next();
   } catch (error) {
-    return res.status(403).json({
+    res.status(403).json({
       success: false,
-      message: "Invalid or expired token",
+      message: "Invalid token",
     });
   }
 };
+
