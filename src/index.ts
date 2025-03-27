@@ -8,6 +8,7 @@ import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
 import mixmatchRoutes from './routes';
 
+
 // Load environment variables before using them
 dotenv.config();
 
@@ -31,6 +32,13 @@ app.use('/health', (req, res) => {
 });
 
 app.use('/api/v1/', mixmatchRoutes());
+
+
+// Error handling middleware
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 app.use(routeError);
 
