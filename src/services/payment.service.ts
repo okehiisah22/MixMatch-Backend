@@ -1,4 +1,4 @@
-import Booking from "../models/Booking.model";
+import {Booking} from "../models/book.model";
 import Payment from "../models/payment.model";
 import { Types } from "mongoose";
 import mongoose from 'mongoose';
