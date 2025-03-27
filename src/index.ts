@@ -52,9 +52,4 @@ app.listen(PORT, () => {
   logger.info(
     `<---------------------------------------------------------------->`
   );
-
-  console.log("Registered Mongoose Models:", mongoose.modelNames()); // ✅ Debugging models
-
-
 });
-

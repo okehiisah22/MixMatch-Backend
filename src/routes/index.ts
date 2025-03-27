@@ -10,6 +10,5 @@ export default (): express.Router => {
   authRouter(router);
   djProfile_Router(router);
   payment_Router(router);
-  // router.use(payment_Router);
   return router;
 };
