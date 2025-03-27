@@ -3,7 +3,10 @@ import {
   verifyAccount,
   resendVerificationCode,
   signup,
-  signin
+  forgotPassword,
+  resetPassword,
+  signin,
+  logout
 } from '../controllers/auth.controller';
 
 import { rateLimiter } from '../middleware/rateLimiter';
@@ -16,11 +19,19 @@ const verificationRateLimiter = rateLimiter({
   max: 5,
 });
 
+const passwordResetRateLimiter = rateLimiter({
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  max: 3, // 3 requests per hour
+});
+
 const authRouter = (router: express.Router) => {
   router.post('/auth/verify-account', verificationRateLimiter, verifyAccount);
   router.post('/auth/resend-verification', resendVerificationCode);
   router.post('/auth/signup', signup);
+  router.post('/auth/forgot-password', passwordResetRateLimiter, forgotPassword);
+  router.post('/auth/reset-password', passwordResetRateLimiter, resetPassword);
   router.post('/auth/signin', signin);
+  router.post('/auth/logout', logout);
   
   // Example of an authenticated route with role restriction (if needed in future)
   // router.get('/auth/profile', 
@@ -32,6 +43,7 @@ const authRouter = (router: express.Router) => {
   //   ]), 
   //   getUserProfile
   // );
+
 };
 
 export default authRouter;
