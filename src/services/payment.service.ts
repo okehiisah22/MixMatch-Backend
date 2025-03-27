@@ -101,9 +101,11 @@ export const updatePayment = async (id: string, data: Partial<PaymentData>) => {
 export const deletePayment = async (id: string) => {
   try {
     if (!Types.ObjectId.isValid(id)) throw { status: 400, error: "Invalid payment ID" };
-    const deletedPayment = await Payment.findByIdAndDelete(id);
+    // const deletedPayment = await Payment.findByIdAndDelete(id);
+    const deletedPayment = await Payment.deleteOne({ _id: id });
+    if (deletedPayment.deletedCount === 0) throw { status: 404, error: "Payment not found" };
     if (!deletedPayment) throw { status: 404, error: "Payment not found" };
-    return { message: "Payment deleted successfully" };
+    return {deletedCount: 1, message: "Payment deleted successfully" };
   } catch (error) {
     throw formatError(error);
   }
