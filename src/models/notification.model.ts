@@ -1,4 +1,14 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Schema, Model } from "mongoose";
+
+// Constants for notification types
+export const NOTIFICATION_TYPES = [
+  "booking",
+  "message",
+  "payment",
+  "event",
+] as const;
+export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
+
 
 export interface INotification extends Document {
   title: string;
@@ -6,21 +16,49 @@ export interface INotification extends Document {
   contentType: string;
   isRead: boolean;
   userId: mongoose.Types.ObjectId; 
+  message: string;
+  type: NotificationType;
+  isRead: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const notificationSchema = new mongoose.Schema(
+const NotificationSchema: Schema = new Schema(
   {
-    title: { type: String, required: true },
-    message: { type: String, required: true },
-    contentType: { type: String, required: true },
-    isRead: { type: Boolean, default: false },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    message: {
+      type: String,
+      required: true,
+      maxlength: 500,
+    },
+    type: {
+      type: String,
+      enum: NOTIFICATION_TYPES,
+      required: true,
+      index: true,
+    },
+    isRead: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true, // This automatically adds createdAt and updatedAt
+  }
 );
 
-export default mongoose.model<INotification>("Notification", notificationSchema);
+// Index for frequently queried fields
+NotificationSchema.index({ userId: 1, isRead: 1 });
+
+const Notification: Model<INotification> = mongoose.model<INotification>(
+  "Notification",
+  NotificationSchema
+);
+
+export default Notification;
