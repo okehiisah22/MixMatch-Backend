@@ -10,22 +10,28 @@ export enum UserRole {
 export interface ISocialLogin {
   googleId?: string;
   appleId?: string;
+  spotifyId?: string;
 }
 
 export interface IUser extends Document {
+  spotifyId?: string;
   firstName: string;
   lastName: string;
+  name?: string;
   email: string;
   password: string;
-  role: UserRole;
+  role?: UserRole;
   phone?: string;
   profilePicture?: string;
-  isVerified: boolean;
+  isVerified?: boolean;
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
   socialLogin?: ISocialLogin;
-  createdAt: Date;
-  updatedAt: Date;
+  refreshToken: string;
+  topArtists?: string[];
+  topGenres?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -52,6 +58,10 @@ const UserSchema: Schema = new Schema(
         'Please provide a valid email',
       ],
     },
+    name: {
+      type: String,
+      trim: true,
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -75,9 +85,20 @@ const UserSchema: Schema = new Schema(
     },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
+    topArtists: {
+      type: [String],
+    },
+    topGenres: {
+      type: [String],
+    },
     socialLogin: {
       googleId: String,
       appleId: String,
+      spotifyId: String,
+    },
+    refreshToken: {
+      type: String,
+      required: [true, 'Refresh token is required'],
     },
   },
   {
