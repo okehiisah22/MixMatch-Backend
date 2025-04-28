@@ -8,6 +8,7 @@ import { connectDB } from './config/db';
 import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
 import mixmatchRoutes from './routes';
+import { callbackSpotify, loginSpotify } from './routes/0auth/sportify';
 
 dotenv.config();
 
@@ -33,6 +34,9 @@ app.use('/health', (req, res) => {
 app.use('/health', (req, res) => {
   res.status(200).json({ greeting: 'Hello World! Mixmatch' });
 });
+
+app.get('/api/auth/spotify/login', loginSpotify);
+app.get('/api/auth/spotify/callback', callbackSpotify);
 
 app.use('/api/v1/', mixmatchRoutes());
 
