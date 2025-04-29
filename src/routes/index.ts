@@ -1,6 +1,11 @@
-import express from 'express';
+import express from "express"
+import swipeRoutes from "./swipe.routes"
 
-const router = express.Router();
+const router = express.Router()
+
 export default (): express.Router => {
-  return router;
-};
+  // Add swipe routes
+  router.use("/swipe", swipeRoutes)
+
+  return router
+}
