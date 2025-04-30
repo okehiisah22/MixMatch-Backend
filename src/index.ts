@@ -9,6 +9,8 @@ import { loggingHandler } from './middleware/pinoHttp';
 import { routeError } from './middleware/routeError';
 import mixmatchRoutes from './routes';
 import { callbackSpotify, loginSpotify } from './routes/0auth/sportify';
+import userRoutes from './routes/user'
+
 
 dotenv.config();
 
@@ -27,25 +29,25 @@ app.use(loggingHandler);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/health', (req, res) => {
-  res.status(200).json({ greeting: 'Hello World! Mixmatch' });
-});
-
-app.use('/health', (req, res) => {
+app.use('/health', (_req, res) => {
   res.status(200).json({ greeting: 'Hello World! Mixmatch' });
 });
 
 app.get('/api/auth/spotify/login', loginSpotify);
 app.get('/api/auth/spotify/callback', callbackSpotify);
 
-app.use('/api/v1/', mixmatchRoutes());
+// ←── Mount your new user‐profile endpoints under the v1 prefix
+app.use('/api/v1/users', userRoutes);
+
+// ←── Existing versioned routes
+app.use('/api/v1', mixmatchRoutes());
 
 app.use(
   (
     err: Error,
-    req: express.Request,
+    _req: express.Request,
     res: express.Response,
-    next: express.NextFunction
+    _next: express.NextFunction
   ) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
@@ -55,13 +57,8 @@ app.use(
 app.use(routeError);
 
 app.listen(PORT, () => {
-  logger.info(
-    `<---------------------------------------------------------------->`
-  );
+  logger.info(`<---------------------------------------------------------------->`);
   logger.info(`Server is running on port ${PORT}`);
   connectDB();
-
-  logger.info(
-    `<---------------------------------------------------------------->`
-  );
+  logger.info(`<---------------------------------------------------------------->`);
 });

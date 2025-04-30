@@ -13,7 +13,20 @@ export interface ISocialLogin {
   spotifyId?: string;
 }
 
-export interface IUser extends Document {
+
+export interface IPreferences {
+  genres: string[];
+  vibes: string[];
+}
+
+export interface IAnthem {
+  trackId: string;
+  previewUrl: string;
+}
+
+
+export interface IUser extends mongoose.Document {
+  isModified(arg0: string): boolean;
   spotifyId?: string;
   firstName: string;
   lastName: string;
@@ -30,12 +43,12 @@ export interface IUser extends Document {
   refreshToken: string;
   topArtists?: string[];
   topGenres?: string[];
+  mood: string[];
   bio?: string;
+  preferences: IPreferences;
+  anthem?: IAnthem;
+  voiceClipUrl?: string;
   mood?: string[];
-  anthem?: {
-    trackId: string;
-    previewUrl: string;
-  };
   createdAt?: Date;
   updatedAt?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -118,13 +131,34 @@ const UserSchema: Schema = new Schema(
       type: String,
       required: [true, 'Refresh token is required'],
     },
+
+    mood: {
+      type: [String],
+      default: [],
+    },
+    bio: {
+      type: String,
+      maxlength: 140,
+    },
+    preferences: {
+      genres: { type: [String], default: [] },
+      vibes:  { type: [String], default: [] },
+    },
+    anthem: {
+      trackId:   String,
+      previewUrl:String,
+    },
+    voiceClipUrl: {
+      type: String,
+    },
+
   },
   {
     timestamps: true,
   }
 );
 
-UserSchema.pre<IUser>('save', async function (next) {
+UserSchema.pre('save', async function (this: IUser, next) {
   if (this.isModified('password')) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
