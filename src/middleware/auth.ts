@@ -1,33 +1,59 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { User } from '../models/user.model';
+import type { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { User } from "../models/user.model";
+import { asyncHandler } from "../utils/asyncHandler";
+import { TokenBlacklist } from "../models/tokenBlacklist";
 
-export interface AuthRequest extends Request {
-  user?: any;
+// Extend Express Request type to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
 }
 
-export const authenticate = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({ message: 'Unauthorized' });
-    return;
+export const authenticate = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  let token;
+
+  // Get token from Authorization header
+  if (req.headers.authorization?.startsWith("Bearer ")) {
+    token = req.headers.authorization.split(" ")[1];
   }
-  
-  const token = authHeader.split(' ')[1];
-  
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized, no token provided",
+    });
+  }
+
+  // Check if token is blacklisted
+  const isBlacklisted = await TokenBlacklist.findOne({ token });
+  if (isBlacklisted) {
+    return res.status(401).json({
+      success: false,
+      message: "Token has been revoked",
+    });
+  }
+
   try {
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-    const user = await User.findById(decoded.id);
-    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
+
+    const user = await User.findById(decoded.id).select("-password");
     if (!user) {
-      res.status(401).json({ message: 'User not found' });
-      return;
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
     }
-    
+
     req.user = user;
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Invalid token' });
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized, token invalid",
+    });
   }
-};
+});
