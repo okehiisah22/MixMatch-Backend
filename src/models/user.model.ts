@@ -30,6 +30,12 @@ export interface IUser extends Document {
   refreshToken: string;
   topArtists?: string[];
   topGenres?: string[];
+  bio?: string;
+  mood?: string[];
+  anthem?: {
+    trackId: string;
+    previewUrl: string;
+  };
   createdAt?: Date;
   updatedAt?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -90,6 +96,18 @@ const UserSchema: Schema = new Schema(
     },
     topGenres: {
       type: [String],
+    },
+    bio: {
+      type: String,
+      trim: true,
+    },
+    mood: {
+      type: [String],
+      default: [],
+    },
+    anthem: {
+      trackId: String,
+      previewUrl: String,
     },
     socialLogin: {
       googleId: String,
