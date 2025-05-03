@@ -10,7 +10,7 @@ import { routeError } from './middleware/routeError';
 import mixmatchRoutes from './routes';
 import { callbackSpotify, loginSpotify } from './routes/0auth/sportify';
 import userRoutes from './routes/user'
-
+import { deckGeneration } from './routes/deck/deckgeneration';
 
 dotenv.config();
 
@@ -41,7 +41,11 @@ app.use('/api/v1/users', userRoutes);
 
 // ←── Existing versioned routes
 app.use('/api/v1', mixmatchRoutes());
-
+app.get('/api/deck', (req, res) => {
+  const { user_id } = req.body;
+  const data = deckGeneration(user_id);
+  res.status(200).json({ data });
+});
 app.use(
   (
     err: Error,
