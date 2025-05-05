@@ -15,6 +15,6 @@
     "skipLibCheck": true,
     "noEmitOnError": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/routes/walletRoutes.js"],
   "exclude": ["node_modules"]
 }
