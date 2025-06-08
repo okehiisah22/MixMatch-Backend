@@ -1,22 +1,22 @@
 import { Controller, Get, UseGuards } from "@nestjs/common"
-import { JwtAuthGuard } from "../auth/jwt-auth.guard"
-import { Public } from "../decorators/public.decorator"
-import type { Request } from "express"
+import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard"
+import type { User } from "./entities/user.entity"
+import type { UsersService } from "./users.service"
 
 @Controller("users")
 export class UsersController {
-  @Public()
-  @Get("public")
-  getPublicData() {
-    return { message: "This is public data" }
+  constructor(private readonly usersService: UsersService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get("me")
+  async getProfile(user: User) {
+    return user.toPublic()
   }
 
-  @Get("profile")
   @UseGuards(JwtAuthGuard)
-  getProfile(req: Request) {
-    return {
-      userId: req.user.userId,
-      provider: req.user.provider,
-    }
+  @Get()
+  async findAll() {
+    const users = await this.usersService.findAll()
+    return users.map((user) => user.toPublic())
   }
 }
